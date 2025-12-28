@@ -1,4 +1,6 @@
 import { User } from "../models/user.model.js";
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
@@ -54,6 +56,7 @@ const editUserRole = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Provide at least one field to update");
   }
 
+  // const user = await User.findOne({ username: username.trim().toLowerCase() });
   const user = await User.findById(id);
 
   if (!user) {
@@ -71,6 +74,8 @@ const editUserRole = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Failed to update acc details");
   }
 
+  // console.log(updatedUser);
+
   return res
     .status(200)
     .json(new ApiResponse(200, updatedUser, "User roles udpated successfully"));
@@ -83,6 +88,7 @@ const softDeleteUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User id is required");
   }
 
+  // const user = await User.findById(id);
   const user = await User.findByIdAndUpdate(
     id,
     { isActive: false },

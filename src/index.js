@@ -14,4 +14,6 @@ myDB()
       console.log(`Example app listening on port ${port}`);
     });
   })
-  .catch((err) => console.log("MongoDB connection error", err));
+  .catch((err) => {
+    console.log("MongoDB connection error", err);
+  });

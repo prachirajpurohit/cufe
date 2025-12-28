@@ -6,18 +6,22 @@ const customerSchema = new Schema(
       type: String,
       trim: true,
       index: true,
+      required: true,
     },
     company: {
       type: String,
       trim: true,
+      required: true,
     },
     email: {
       type: String,
       lowercase: true,
+      required: true,
     },
     segment: {
       type: String,
       enum: ["enterprise", "mid_market", "smb", "startup"], // ✅ Add validation
+      required: true,
     },
   },
   { timestamps: true },
