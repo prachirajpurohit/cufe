@@ -1,0 +1,8 @@
+.env
+node_modules/
+*.log
+.vscode/
+prd.md
+techspec.md
+timeline.md
+.env
