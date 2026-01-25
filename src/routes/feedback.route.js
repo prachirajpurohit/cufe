@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import {
   getAllFeedback,
   postAFeedback,
@@ -9,22 +8,22 @@ import {
   getFeedbackHistory,
   softDeleteFeedback,
 } from "../controllers/feedback.controller.js";
-
 import {
   getAllCommentsOnAFeedback,
   postACommentOnAFeedback,
 } from "../controllers/comments.controller.js";
-
+import { requireAdmin } from "../middlewares/user.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
+router.use(verifyJWT);
 
 router.route("/").get(getAllFeedback);
-router.route("/").post(verifyJWT, postAFeedback);
+router.route("/").post(postAFeedback);
 router.route("/:id").get(getAFeedback);
 router.route("/:id").patch(editFeedback);
-router.route("/:id").delete(softDeleteFeedback);
-router.route("/:id/status").patch(verifyJWT, changeFeedbackStatus);
+router.route("/:id").delete(requireAdmin, softDeleteFeedback);
+router.route("/:id/status").patch(changeFeedbackStatus);
 router.route("/:id/history").get(getFeedbackHistory);
 
 // GET    /api/feedback/:feedbackId/comments
