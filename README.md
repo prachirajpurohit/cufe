@@ -205,9 +205,9 @@ new → under_review → planned → in_progress → completed
 | `MONGO_URI` | MongoDB connection string | Yes | - |
 | `CORS_ORIGIN` | Allowed CORS origin | Yes | - |
 | `JWT_ACCESS_SECRET` | Secret key for JWT tokens | Yes | - |
-| `JWT_ACCESS_EXPIRY` | JWT token expiration time | No | 7d |
+| `JWT_ACCESS_EXPIRY` | JWT token expiration time | No | 1d |
 | `JWT_REFRESH_SECRET` | Secret for refresh tokens | Yes | - |
-| `JWT_REFRESH_EXPIRY` | Refresh token expiration | No | 30d |
+| `JWT_REFRESH_EXPIRY` | Refresh token expiration | No | 10d |
 | `NODE_ENV` | Environment mode | No | development |
 
 ## Health Check
@@ -238,7 +238,7 @@ npx prettier --write .
 - [x] Advanced filtering and search
 - [x] Dashboard analytics
 - [x] Status history tracking
-- [ ] Comments system
+- [x] Comments system
 - [ ] Email notifications
 - [ ] File attachments
 - [ ] Forgot password functionality
