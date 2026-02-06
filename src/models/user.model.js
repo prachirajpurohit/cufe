@@ -70,8 +70,8 @@ userSchema.methods.generateAccessToken = async function () {
       username: this.username,
       role: this.role,
     },
-    process.env.JWT_ACCESS_SECRET,
-    { expiresIn: process.env.JWT_ACCESS_EXPIRY },
+    process.JWT_ACCESS_SECRET,
+    { expiresIn: process.JWT_ACCESS_EXPIRY },
   );
 };
 
@@ -80,8 +80,8 @@ userSchema.methods.generateRefreshToken = async function () {
     {
       _id: this._id,
     },
-    process.env.JWT_REFRESH_SECRET,
-    { expiresIn: process.env.JWT_REFRESH_EXPIRY },
+    process.JWT_REFRESH_SECRET,
+    { expiresIn: process.JWT_REFRESH_EXPIRY },
   );
 };
 

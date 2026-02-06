@@ -100,7 +100,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.NODE_ENV === "production",
   };
 
   return res
@@ -131,7 +131,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.NODE_ENV === "production",
   };
 
   return res
@@ -151,7 +151,7 @@ const refreshToken = asyncHandler(async (req, res) => {
   try {
     const decodedToken = jwt.verify(
       oldRefreshToken,
-      process.env.JWT_REFRESH_SECRET,
+      process.JWT_REFRESH_SECRET,
     );
 
     const user = await User.findById(decodedToken?._id).select("+refreshToken");
@@ -169,7 +169,7 @@ const refreshToken = asyncHandler(async (req, res) => {
 
     const options = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.NODE_ENV === "production",
     };
 
     return res

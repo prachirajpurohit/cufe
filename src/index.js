@@ -2,11 +2,13 @@ import dotenv from "dotenv";
 import app from "./app.js";
 import myDB from "./db/index.js";
 
-dotenv.config({
-  path: "./.env",
-});
+// dotenv.config({
+//   path: "./.env",
+// });
 
-const port = process.env.PORT || 3000;
+dotenv.config();
+
+const port = process.PORT || 3000;
 
 myDB()
   .then(() => {
