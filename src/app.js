@@ -6,7 +6,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN,
     credentials: true,
   })
 );
@@ -23,7 +23,7 @@ import userRouter from "./routes/user.route.js";
 import customerRouter from "./routes/customer.route.js";
 import feedbackRouter from "./routes/feedback.route.js";
 import commentRouter from "./routes/comments.route.js";
-import dashboardRouter from "./routes/dashboard.route.js";
+// import dashboardRouter from "./routes/dashboard.route.js";
 
 // routes
 app.use("/healthcheck", healthCheck);
@@ -32,6 +32,6 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/customers", customerRouter);
 app.use("/api/v1/feedback", feedbackRouter);
 app.use("/api/v1/comments", commentRouter);
-app.use("/api/v1/dashboard/stats", dashboardRouter);
+// app.use("/api/v1/dashboard/stats", dashboardRouter);
 
 export default app;

@@ -8,7 +8,7 @@ import myDB from "./db/index.js";
 
 dotenv.config();
 
-const port = process.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 myDB()
   .then(() => {
