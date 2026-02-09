@@ -45,5 +45,7 @@ const feedbackSchema = new Schema(
   { timestamps: true },
 );
 
+feedbackSchema.index({ title: 'text', description: 'text' });
+
 export const Feedback = mongoose.model("Feedback", feedbackSchema);
 

@@ -5,16 +5,39 @@ import { Feedback } from "../models/feedback.model.js";
 import { Customer } from "../models/customer.model.js";
 import { StatusHistory } from "../models/status-history.model.js";
 
-// * no pagination
 const getAllFeedback = asyncHandler(async (req, res) => {
-  const feedback = await Feedback.find({ isDeleted: false })
-    .populate("customerId", "name company segment")
+  const {
+    search,
+    status,
+    category,
+    sortBy = "createdAt",
+    sortOrder = "desc",
+  } = req.query;
+
+  const filter = { isDeleted: false };
+
+  if (search) {
+    filter.$text = { $search: search };
+  }
+
+  if (status) {
+    const statuses = status.split(",");
+    filter.status = { $in: statuses };
+  }
+
+  if (category) {
+    const categories = categories.split(",");
+    filter.category = { $in: categories };
+  }
+
+  const feedback = await Feedback.find(filter)
+    .populate("customerId ", "name company segment")
     .populate("createdBy", "fullname email")
-    .sort({ createdAt: -1 });
+    .sort({ [sortBy]: sortOrder === "asc" ? 1 : -1 });
 
   return res
     .status(200)
-    .json(new ApiResponse(200, feedback, "Feedbacks fetched successfully"));
+    .json(new ApiResponse(200, feedback, "Feedback fetched successfully"));
 });
 
 const postAFeedback = asyncHandler(async (req, res) => {
