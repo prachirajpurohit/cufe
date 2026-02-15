@@ -12,6 +12,8 @@ const getAllFeedback = asyncHandler(async (req, res) => {
     category,
     sortBy = "createdAt",
     sortOrder = "desc",
+    page = 1,
+    limit = 20,
   } = req.query;
 
   const filter = { isDeleted: false };
@@ -30,14 +32,34 @@ const getAllFeedback = asyncHandler(async (req, res) => {
     filter.category = { $in: categories };
   }
 
-  const feedback = await Feedback.find(filter)
-    .populate("customerId ", "name company segment")
-    .populate("createdBy", "fullname email")
-    .sort({ [sortBy]: sortOrder === "asc" ? 1 : -1 });
+  const skip = (page - 1) * limit;
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, feedback, "Feedback fetched successfully"));
+  const [feedback, total] = await Promise.all([
+    Feedback.find(filter)
+      .populate("customerId", "name company segment")
+      .populate("createdBy", "fullname email")
+      .sort({ [sortBy]: sortOrder === "asc" ? 1 : -1 })
+      .skip(skip)
+      .limit(limit),
+
+    Feedback.countDocuments(filter), // ← NEW: Total count
+  ]);
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        feedback,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit),
+        },
+      },
+      "Feedback fetched successfully",
+    ),
+  );
 });
 
 const postAFeedback = asyncHandler(async (req, res) => {
