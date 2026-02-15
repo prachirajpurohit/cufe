@@ -1,6 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import path from "path";
 
 const app = express();
 
@@ -26,6 +27,11 @@ import commentRouter from "./routes/comments.route.js";
 import dashboardRouter from "./routes/dashboard.route.js";
 
 // routes
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(process.cwd(), "public", "index.html"));
+});
+
 app.use("/healthcheck", healthCheck);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback API Documentation</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo">Feedback API</div>
+      <div class="status">
+        <span class="dot"></span>
+        <span>Live</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Customer Feedback Management API</h1>
+      <p class="subtitle">REST API for centralized feedback tracking and analytics</p>
+      <div class="base-url">
+        <span class="label">Base URL</span>
+        <code id="base-url">https://cufe.up.railway.app/api/v1</code>
+        <button class="copy-btn" onclick="copyUrl()">Copy</button>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="feature-card">
+        <div class="icon">🔐</div>
+        <h3>Secure Auth</h3>
+        <p>JWT-based authentication</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📝</div>
+        <h3>Feedback CRUD</h3>
+        <p>Complete operations</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🔍</div>
+        <h3>Search & Filter</h3>
+        <p>Advanced queries</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📊</div>
+        <h3>Analytics</h3>
+        <p>Real-time dashboard</p>
+      </div>
+    </section>
+
+    <section class="endpoints">
+      <h2>API Endpoints</h2>
+
+      <div class="endpoint-section">
+        <h3>Authentication</h3>
+        <div class="endpoint-list">
+          <div class="endpoint">
+            <span class="method post">POST</span>
+            <code>/auth/register</code>
+          </div>
+          <div class="endpoint">
+            <span class="method post">POST</span>
+            <code>/auth/login</code>
+          </div>
+          <div class="endpoint">
+            <span class="method post">POST</span>
+            <code>/auth/logout</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint-section">
+        <h3>Feedback</h3>
+        <div class="endpoint-list">
+          <div class="endpoint">
+            <span class="method get">GET</span>
+            <code>/feedback</code>
+            <span class="desc">List all feedback</span>
+          </div>
+          <div class="endpoint">
+            <span class="method post">POST</span>
+            <code>/feedback</code>
+            <span class="desc">Create feedback</span>
+          </div>
+          <div class="endpoint">
+            <span class="method get">GET</span>
+            <code>/feedback/:id</code>
+            <span class="desc">Get one feedback</span>
+          </div>
+          <div class="endpoint">
+            <span class="method patch">PATCH</span>
+            <code>/feedback/:id</code>
+            <span class="desc">Update feedback</span>
+          </div>
+          <div class="endpoint">
+            <span class="method delete">DELETE</span>
+            <code>/feedback/:id</code>
+            <span class="desc">Delete feedback</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint-section">
+        <h3>Customers</h3>
+        <div class="endpoint-list">
+          <div class="endpoint">
+            <span class="method get">GET</span>
+            <code>/customers</code>
+          </div>
+          <div class="endpoint">
+            <span class="method post">POST</span>
+            <code>/customers</code>
+          </div>
+          <div class="endpoint">
+            <span class="method get">GET</span>
+            <code>/customers/search</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint-section">
+        <h3>Dashboard</h3>
+        <div class="endpoint-list">
+          <div class="endpoint">
+            <span class="method get">GET</span>
+            <code>/dashboard</code>
+            <span class="desc">Get statistics</span>
+          </div>
+          <div class="endpoint">
+            <span class="method get">GET</span>
+            <code>/dashboard/recent-activity</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-note">
+      <h3>Authentication Required</h3>
+      <p>All endpoints (except auth) require JWT token in header:</p>
+      <pre><code>Authorization: Bearer YOUR_TOKEN_HERE</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Feedback API v1.0 • Built with Node.js, Express, MongoDB</p>
+    </div>
+  </footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>
