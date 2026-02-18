@@ -3,153 +3,728 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Feedback API Documentation</title>
-  <link rel="stylesheet" href="/style.css">
+  <title>Feedback API — Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:        #080c14;
+      --surface:   #0d1424;
+      --surface2:  #111827;
+      --border:    rgba(255,255,255,0.06);
+      --border-hi: rgba(255,255,255,0.12);
+      --text:      #e8edf5;
+      --muted:     #6b7a99;
+      --accent:    #4f8ef7;
+      --accent2:   #a78bfa;
+      --glow:      rgba(79,142,247,0.18);
+
+      --get:       #22c55e;
+      --post:      #4f8ef7;
+      --patch:     #f59e0b;
+      --delete:    #ef4444;
+
+      --get-bg:    rgba(34,197,94,0.08);
+      --post-bg:   rgba(79,142,247,0.08);
+      --patch-bg:  rgba(245,158,11,0.08);
+      --delete-bg: rgba(239,68,68,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Background mesh ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 10% -10%, rgba(79,142,247,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 90% 110%, rgba(167,139,250,0.10) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Grid texture ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Navbar ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      background: rgba(8,12,20,0.75);
+    }
+
+    nav .inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .nav-logo span {
+      color: var(--accent);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .version-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3px 8px;
+    }
+
+    .live-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.78rem;
+      color: var(--get);
+      font-weight: 500;
+    }
+
+    .live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--get);
+      box-shadow: 0 0 0 0 rgba(34,197,94,0.4);
+      animation: ping 1.8s ease-in-out infinite;
+    }
+
+    @keyframes ping {
+      0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+      50%      { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 96px 0 80px;
+      text-align: center;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border: 1px solid rgba(79,142,247,0.25);
+      background: rgba(79,142,247,0.07);
+      border-radius: 100px;
+      padding: 6px 16px;
+      margin-bottom: 32px;
+    }
+
+    .hero-label::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      background: linear-gradient(140deg, #e8edf5 30%, var(--accent) 70%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ── Base URL bar ── */
+    .base-url-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      background: var(--surface);
+      border: 1px solid var(--border-hi);
+      border-radius: 10px;
+      overflow: hidden;
+      max-width: 100%;
+    }
+
+    .base-url-bar .url-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      background: rgba(79,142,247,0.1);
+      border-right: 1px solid var(--border-hi);
+      padding: 12px 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .base-url-bar .url-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text);
+      padding: 12px 20px;
+      flex: 1;
+    }
+
+    .copy-btn {
+      background: none;
+      border: none;
+      border-left: 1px solid var(--border);
+      cursor: pointer;
+      padding: 12px 16px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover { color: var(--text); background: var(--surface2); }
+    .copy-btn.copied { color: var(--get); }
+
+    /* ── Feature cards ── */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 16px 0 72px;
+    }
+
+    @media (max-width: 700px) {
+      .features { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .feat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 20px;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feat::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--glow), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feat:hover { border-color: rgba(79,142,247,0.3); transform: translateY(-3px); }
+    .feat:hover::before { opacity: 1; }
+
+    .feat-icon {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .feat h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .feat p {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    /* ── Section title ── */
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 400;
+      font-family: 'JetBrains Mono', monospace;
+      margin-left: 12px;
+    }
+
+    /* ── Endpoint sections ── */
+    .ep-group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .ep-group-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+
+    .ep-group-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .ep-group-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .ep-count {
+      margin-left: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+    }
+
+    .ep-list { padding: 8px 0; }
+
+    .ep-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 11px 24px;
+      transition: background 0.15s;
+      cursor: default;
+    }
+
+    .ep-row:hover { background: rgba(255,255,255,0.025); }
+
+    .method-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      width: 54px;
+      text-align: center;
+      padding: 4px 0;
+      border-radius: 5px;
+      flex-shrink: 0;
+    }
+
+    .method-badge.get    { color: var(--get);    background: var(--get-bg); }
+    .method-badge.post   { color: var(--post);   background: var(--post-bg); }
+    .method-badge.patch  { color: var(--patch);  background: var(--patch-bg); }
+    .method-badge.delete { color: var(--delete); background: var(--delete-bg); }
+
+    .ep-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.83rem;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .ep-path .param { color: var(--accent2); }
+
+    .ep-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    /* ── Auth note ── */
+    .auth-note {
+      border: 1px solid rgba(79,142,247,0.2);
+      background: rgba(79,142,247,0.05);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin: 40px 0;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .auth-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .auth-note h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .auth-note p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    .auth-note pre {
+      background: var(--surface);
+      border: 1px solid var(--border-hi);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      overflow-x: auto;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 80px;
+      padding: 32px 0;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-inner p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .footer-stack {
+      display: flex;
+      gap: 8px;
+    }
+
+    .stack-tag {
+      font-size: 0.68rem;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Animations ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in:nth-child(1) { animation-delay: 0.05s; }
+    .fade-in:nth-child(2) { animation-delay: 0.12s; }
+    .fade-in:nth-child(3) { animation-delay: 0.19s; }
+    .fade-in:nth-child(4) { animation-delay: 0.26s; }
+  </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="container">
-      <div class="logo">Feedback API</div>
-      <div class="status">
-        <span class="dot"></span>
-        <span>Live</span>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="inner">
+      <div class="nav-logo">Feedback<span>API</span></div>
+      <div class="nav-right">
+        <span class="version-badge">v1.0.0</span>
+        <div class="live-pill">
+          <span class="live-dot"></span>
+          Live
+        </div>
       </div>
     </div>
   </nav>
 
-  <main class="container">
+  <div class="wrapper">
+
+    <!-- Hero -->
     <section class="hero">
-      <h1>Customer Feedback Management API</h1>
-      <p class="subtitle">REST API for centralized feedback tracking and analytics</p>
-      <div class="base-url">
-        <span class="label">Base URL</span>
-        <code id="base-url">https://cufe.up.railway.app/</code>
-        <button class="copy-btn" onclick="copyUrl()">Copy</button>
+      <div class="hero-label">REST API Documentation</div>
+      <h1>Customer Feedback<br>Management API</h1>
+      <p class="hero-sub">Centralized feedback tracking and real-time analytics — built for developers who move fast.</p>
+      <div class="base-url-bar">
+        <span class="url-label">Base URL</span>
+        <span class="url-value" id="base-url">https://cufe.up.railway.app/</span>
+        <button class="copy-btn" id="copy-btn" onclick="copyUrl()">Copy</button>
       </div>
     </section>
 
-    <section class="features">
-      <div class="feature-card">
-        <div class="icon">🔐</div>
+    <!-- Feature cards -->
+    <div class="features">
+      <div class="feat fade-in">
+        <span class="feat-icon">🔐</span>
         <h3>Secure Auth</h3>
         <p>JWT-based authentication</p>
       </div>
-      <div class="feature-card">
-        <div class="icon">📝</div>
-        <h3>Feedback CRUD</h3>
-        <p>Complete operations</p>
+      <div class="feat fade-in">
+        <span class="feat-icon">📝</span>
+        <h3>Full CRUD</h3>
+        <p>Complete feedback operations</p>
       </div>
-      <div class="feature-card">
-        <div class="icon">🔍</div>
+      <div class="feat fade-in">
+        <span class="feat-icon">🔍</span>
         <h3>Search & Filter</h3>
-        <p>Advanced queries</p>
+        <p>Advanced query support</p>
       </div>
-      <div class="feature-card">
-        <div class="icon">📊</div>
+      <div class="feat fade-in">
+        <span class="feat-icon">📊</span>
         <h3>Analytics</h3>
-        <p>Real-time dashboard</p>
+        <p>Real-time dashboard stats</p>
       </div>
-    </section>
+    </div>
 
-    <section class="endpoints">
-      <h2>API Endpoints</h2>
+    <!-- Endpoints -->
+    <div style="padding-bottom: 80px;">
+      <h2 class="section-title">Endpoints <span>13 routes</span></h2>
 
-      <div class="endpoint-section">
-        <h3>Authentication</h3>
-        <div class="endpoint-list">
-          <div class="endpoint">
-            <span class="method post">POST</span>
-            <code>/auth/register</code>
+      <!-- Auth -->
+      <div class="ep-group">
+        <div class="ep-group-header">
+          <div class="ep-group-icon" style="background:rgba(167,139,250,0.1);">🔐</div>
+          <span class="ep-group-title">Authentication</span>
+          <span class="ep-count">3 routes</span>
+        </div>
+        <div class="ep-list">
+          <div class="ep-row">
+            <span class="method-badge post">POST</span>
+            <span class="ep-path">/auth/register</span>
+            <span class="ep-desc">Create account</span>
           </div>
-          <div class="endpoint">
-            <span class="method post">POST</span>
-            <code>/auth/login</code>
+          <div class="ep-row">
+            <span class="method-badge post">POST</span>
+            <span class="ep-path">/auth/login</span>
+            <span class="ep-desc">Get JWT token</span>
           </div>
-          <div class="endpoint">
-            <span class="method post">POST</span>
-            <code>/auth/logout</code>
+          <div class="ep-row">
+            <span class="method-badge post">POST</span>
+            <span class="ep-path">/auth/logout</span>
+            <span class="ep-desc">Invalidate session</span>
           </div>
         </div>
       </div>
 
-      <div class="endpoint-section">
-        <h3>Feedback</h3>
-        <div class="endpoint-list">
-          <div class="endpoint">
-            <span class="method get">GET</span>
-            <code>/feedback</code>
-            <span class="desc">List all feedback</span>
+      <!-- Feedback -->
+      <div class="ep-group">
+        <div class="ep-group-header">
+          <div class="ep-group-icon" style="background:rgba(79,142,247,0.1);">📝</div>
+          <span class="ep-group-title">Feedback</span>
+          <span class="ep-count">5 routes</span>
+        </div>
+        <div class="ep-list">
+          <div class="ep-row">
+            <span class="method-badge get">GET</span>
+            <span class="ep-path">/feedback</span>
+            <span class="ep-desc">List all feedback</span>
           </div>
-          <div class="endpoint">
-            <span class="method post">POST</span>
-            <code>/feedback</code>
-            <span class="desc">Create feedback</span>
+          <div class="ep-row">
+            <span class="method-badge post">POST</span>
+            <span class="ep-path">/feedback</span>
+            <span class="ep-desc">Create feedback</span>
           </div>
-          <div class="endpoint">
-            <span class="method get">GET</span>
-            <code>/feedback/:id</code>
-            <span class="desc">Get one feedback</span>
+          <div class="ep-row">
+            <span class="method-badge get">GET</span>
+            <span class="ep-path">/feedback/<span class="param">:id</span></span>
+            <span class="ep-desc">Get one feedback</span>
           </div>
-          <div class="endpoint">
-            <span class="method patch">PATCH</span>
-            <code>/feedback/:id</code>
-            <span class="desc">Update feedback</span>
+          <div class="ep-row">
+            <span class="method-badge patch">PATCH</span>
+            <span class="ep-path">/feedback/<span class="param">:id</span></span>
+            <span class="ep-desc">Update feedback</span>
           </div>
-          <div class="endpoint">
-            <span class="method delete">DELETE</span>
-            <code>/feedback/:id</code>
-            <span class="desc">Delete feedback</span>
+          <div class="ep-row">
+            <span class="method-badge delete">DELETE</span>
+            <span class="ep-path">/feedback/<span class="param">:id</span></span>
+            <span class="ep-desc">Delete feedback</span>
           </div>
         </div>
       </div>
 
-      <div class="endpoint-section">
-        <h3>Customers</h3>
-        <div class="endpoint-list">
-          <div class="endpoint">
-            <span class="method get">GET</span>
-            <code>/customers</code>
+      <!-- Customers -->
+      <div class="ep-group">
+        <div class="ep-group-header">
+          <div class="ep-group-icon" style="background:rgba(34,197,94,0.1);">👤</div>
+          <span class="ep-group-title">Customers</span>
+          <span class="ep-count">3 routes</span>
+        </div>
+        <div class="ep-list">
+          <div class="ep-row">
+            <span class="method-badge get">GET</span>
+            <span class="ep-path">/customers</span>
+            <span class="ep-desc">List customers</span>
           </div>
-          <div class="endpoint">
-            <span class="method post">POST</span>
-            <code>/customers</code>
+          <div class="ep-row">
+            <span class="method-badge post">POST</span>
+            <span class="ep-path">/customers</span>
+            <span class="ep-desc">Create customer</span>
           </div>
-          <div class="endpoint">
-            <span class="method get">GET</span>
-            <code>/customers/search</code>
+          <div class="ep-row">
+            <span class="method-badge get">GET</span>
+            <span class="ep-path">/customers/search</span>
+            <span class="ep-desc">Search customers</span>
           </div>
         </div>
       </div>
 
-      <div class="endpoint-section">
-        <h3>Dashboard</h3>
-        <div class="endpoint-list">
-          <div class="endpoint">
-            <span class="method get">GET</span>
-            <code>/dashboard</code>
-            <span class="desc">Get statistics</span>
+      <!-- Dashboard -->
+      <div class="ep-group">
+        <div class="ep-group-header">
+          <div class="ep-group-icon" style="background:rgba(245,158,11,0.1);">📊</div>
+          <span class="ep-group-title">Dashboard</span>
+          <span class="ep-count">2 routes</span>
+        </div>
+        <div class="ep-list">
+          <div class="ep-row">
+            <span class="method-badge get">GET</span>
+            <span class="ep-path">/dashboard</span>
+            <span class="ep-desc">Get statistics</span>
           </div>
-          <div class="endpoint">
-            <span class="method get">GET</span>
-            <code>/dashboard/recent-activity</code>
+          <div class="ep-row">
+            <span class="method-badge get">GET</span>
+            <span class="ep-path">/dashboard/recent-activity</span>
+            <span class="ep-desc">Recent events</span>
           </div>
         </div>
       </div>
-    </section>
 
-    <section class="auth-note">
-      <h3>Authentication Required</h3>
-      <p>All endpoints (except auth) require JWT token in header:</p>
-      <pre><code>Authorization: Bearer YOUR_TOKEN_HERE</code></pre>
-    </section>
-  </main>
+      <!-- Auth note -->
+      <div class="auth-note">
+        <span class="auth-icon">🔑</span>
+        <div>
+          <h3>Authentication Required</h3>
+          <p>All endpoints except <code style="color:var(--accent2);font-family:'JetBrains Mono',monospace;font-size:0.8rem;">/auth/*</code> require a valid JWT token passed in the Authorization header.</p>
+          <pre>Authorization: Bearer YOUR_TOKEN_HERE</pre>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Footer -->
   <footer>
-    <div class="container">
-      <p>Feedback API v1.0 • Built with Node.js, Express, MongoDB</p>
+    <div class="footer-inner">
+      <p>© 2025 Feedback API — v1.0.0</p>
+      <div class="footer-stack">
+        <span class="stack-tag">Node.js</span>
+        <span class="stack-tag">Express</span>
+        <span class="stack-tag">MongoDB</span>
+      </div>
     </div>
   </footer>
 
-  <script src="/script.js"></script>
+  <script>
+    function copyUrl() {
+      const url = document.getElementById('base-url').textContent;
+      navigator.clipboard.writeText(url).then(() => {
+        const btn = document.getElementById('copy-btn');
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    // Intersection-based fade for endpoint groups
+    const groups = document.querySelectorAll('.ep-group');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.05 });
+
+    groups.forEach((g, i) => {
+      g.style.opacity = '0';
+      g.style.transform = 'translateY(16px)';
+      g.style.transition = `opacity 0.5s ease ${i * 0.08}s, transform 0.5s ease ${i * 0.08}s`;
+      obs.observe(g);
+    });
+  </script>
+
 </body>
 </html>
