@@ -15,7 +15,16 @@ const feedbackSchema = new Schema(
     category: {
       type: String,
       required: true,
-      enum: ["bug", "feature_request", "improvement", "question"], // ✅ Add validation
+      enum: [
+        "bug",
+        "feature_request",
+        "improvement",
+        "question",
+        "job_application",
+        "support",
+        "form_submission",
+        "general",
+      ], // ✅ Add validation
     },
     status: {
       type: String,
@@ -45,7 +54,6 @@ const feedbackSchema = new Schema(
   { timestamps: true },
 );
 
-feedbackSchema.index({ title: 'text', description: 'text' });
+feedbackSchema.index({ title: "text", description: "text" });
 
 export const Feedback = mongoose.model("Feedback", feedbackSchema);
-
