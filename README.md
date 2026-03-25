@@ -144,7 +144,7 @@ customer-feedback-management-platform/
 │   │   ├── user.controller.js
 │   │   ├── customer.controller.js
 │   │   ├── feedback.controller.js
-│   │   └── (comments - in progress)
+│   │   └── comments.controller.js
 │   ├── models/              # Mongoose models
 │   │   ├── user.model.js
 │   │   ├── customer.model.js
@@ -155,6 +155,7 @@ customer-feedback-management-platform/
 │   │   ├── user.route.js
 │   │   ├── customer.route.js
 │   │   ├── feedback.route.js
+│   │   ├── comments.route.js
 │   │   └── healthcheck.route.js
 │   ├── middleware/          # Custom middleware
 │   │   ├── auth.middleware.js
